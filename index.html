@@ -4,10 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>document.documentElement.classList.add('js')</script>
-<title>Žebětínský filmový klub</title>
-<meta name="description" content="Filmový klub v Brně-Žebětíně. Pravidelná promítání české kinematografie v Katolickém domě.">
-<meta property="og:title" content="Žebětínský filmový klub">
-<meta property="og:description" content="Filmový klub v Brně-Žebětíně. Pravidelná promítání české kinematografie v Katolickém domě.">
+
+<!-- ============================================================
+     SEO / METADATA
+     ============================================================ -->
+<title>Žebětínský filmový klub | Projekce v Brně-Žebětíně</title>
+<meta name="description" content="Žebětínský filmový klub přináší pravidelné projekce kvalitních filmů v Brně-Žebětíně. Sledujte program a rezervujte si své místo.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Žebětínský filmový klub">
+<meta name="theme-color" content="#ECE6D7">
+<link rel="canonical" href="https://www.zebetinskyfilmovyklub.cz/">
+
+<!-- Open Graph (Facebook, LinkedIn, WhatsApp, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="Žebětínský filmový klub">
+<meta property="og:url" content="https://www.zebetinskyfilmovyklub.cz/">
+<meta property="og:title" content="Žebětínský filmový klub | Projekce v Brně-Žebětíně">
+<meta property="og:description" content="Žebětínský filmový klub přináší pravidelné projekce kvalitních filmů v Brně-Žebětíně. Sledujte program a rezervujte si své místo.">
+<meta property="og:image" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
+<meta property="og:image:secure_url" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo Žebětínského filmového klubu — oko v ozubeném kruhu s textem ŽEBĚTÍNSKÝ FILMOVÝ KLUB.">
+
+<!-- Twitter / X card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://www.zebetinskyfilmovyklub.cz/">
+<meta name="twitter:title" content="Žebětínský filmový klub | Projekce v Brně-Žebětíně">
+<meta name="twitter:description" content="Žebětínský filmový klub přináší pravidelné projekce kvalitních filmů v Brně-Žebětíně. Sledujte program a rezervujte si své místo.">
+<meta name="twitter:image" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
+<meta name="twitter:image:alt" content="Logo Žebětínského filmového klubu — oko v ozubeném kruhu s textem ŽEBĚTÍNSKÝ FILMOVÝ KLUB.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,9 +163,125 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-links a.cta:hover { background: var(--red-deep); }
 
-@media (max-width: 720px) {
-  .nav-links a:not(.cta) { display: none; }
+/* ----- HAMBURGER (mobile only) ----- */
+.nav-toggle {
+  display: none;
+  width: 44px; height: 44px;
+  padding: 0;
+  margin: -6px -10px -6px 0;       /* extends tap target without shifting layout */
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 2;                       /* stays clickable above the overlay */
 }
+.nav-toggle-lines {
+  position: relative;
+  display: block;
+  width: 22px; height: 14px;
+  margin: 0 auto;
+}
+.nav-toggle-lines span {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1.6px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: top .35s var(--ease), transform .35s var(--ease),
+              opacity .2s var(--ease), background .35s var(--ease);
+}
+.nav-toggle-lines span:nth-child(1) { top: 0; }
+.nav-toggle-lines span:nth-child(2) { top: 6.2px; }
+.nav-toggle-lines span:nth-child(3) { top: 12.4px; }
+
+html.is-menu-open .nav-toggle-lines span { background: var(--bg); }
+html.is-menu-open .nav-toggle-lines span:nth-child(1) { top: 6.2px; transform: rotate(45deg); }
+html.is-menu-open .nav-toggle-lines span:nth-child(2) { opacity: 0; }
+html.is-menu-open .nav-toggle-lines span:nth-child(3) { top: 6.2px; transform: rotate(-45deg); }
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: inline-block; }
+}
+
+/* When menu is open, make the nav itself transparent so the dark overlay
+   shows behind it, and recolor the brand wordmark for legibility. */
+html.is-menu-open .nav,
+html.is-menu-open .nav.is-scrolled {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+html.is-menu-open .brand { color: var(--bg); }
+
+/* Lock background scroll when menu is open */
+html.is-menu-open, html.is-menu-open body { overflow: hidden; }
+
+/* ----- OVERLAY ----- */
+.nav-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 140;                     /* below the sticky nav so the hamburger stays tappable */
+  background: var(--ink);
+  color: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 96px var(--gutter) 32px;
+  transition: opacity .4s var(--ease), visibility .4s var(--ease);
+}
+html.is-menu-open .nav-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav-menu-inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1.5vw, 14px);
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.menu-link {
+  display: block;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 94, "opsz" 72, "wght" 700;
+  font-size: clamp(48px, 14vw, 96px);
+  line-height: .92;
+  letter-spacing: -0.03em;
+  color: var(--bg);
+  transition: opacity .45s var(--ease), transform .45s var(--ease), color .25s var(--ease);
+  opacity: 0;
+  transform: translateY(18px);
+}
+.menu-link:hover, .menu-link:active { color: var(--red); }
+.menu-link .red { color: var(--red); }
+
+html.is-menu-open .menu-link { opacity: 1; transform: none; }
+html.is-menu-open .menu-link:nth-child(1) { transition-delay: .08s, .08s, 0s; }
+html.is-menu-open .menu-link:nth-child(2) { transition-delay: .14s, .14s, 0s; }
+html.is-menu-open .menu-link:nth-child(3) { transition-delay: .20s, .20s, 0s; }
+html.is-menu-open .menu-link:nth-child(4) { transition-delay: .26s, .26s, 0s; }
+
+.nav-menu-foot {
+  margin-top: 24px;
+  font-size: 12px;
+  font-variation-settings: "wdth" 100, "opsz" 12, "wght" 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(236, 230, 215, .55);
+  opacity: 0;
+  transition: opacity .4s var(--ease);
+  transition-delay: .32s;
+}
+html.is-menu-open .nav-menu-foot { opacity: 1; }
 
 /* ============================================================
    01 — INTRO (Hero + Mission combined)
@@ -644,8 +788,30 @@ html.js .reveal.d5.in { transition-delay: .38s; }
       <a href="#info">Informace</a>
       <a href="#kontakt" class="cta">Sociální sítě</a>
     </div>
+
+    <button class="nav-toggle" id="navToggle" type="button"
+            aria-label="Otevřít menu" aria-controls="navMenu" aria-expanded="false">
+      <span class="nav-toggle-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
   </div>
 </nav>
+
+<!-- ============================================================
+     MOBILE MENU OVERLAY
+     ============================================================ -->
+<div class="nav-menu" id="navMenu" aria-hidden="true">
+  <nav class="nav-menu-inner" aria-label="Hlavní menu">
+    <a href="#program" class="menu-link">Program</a>
+    <a href="#archiv"  class="menu-link">Archiv</a>
+    <a href="#info"    class="menu-link">Informace</a>
+    <a href="#kontakt" class="menu-link"><span class="red">Sociální sítě</span></a>
+  </nav>
+  <div class="nav-menu-foot">
+    Žebětínský filmový klub · Brno-Žebětín
+  </div>
+</div>
 
 <!-- ============================================================
      01 — INTRO (Hero + Mission combined)
@@ -897,6 +1063,39 @@ html.js .reveal.d5.in { transition-delay: .38s; }
   const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 24);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ---------- MOBILE MENU ----------
+  const toggle = document.getElementById('navToggle');
+  const menu = document.getElementById('navMenu');
+  const root = document.documentElement;
+
+  const setMenu = (open) => {
+    root.classList.toggle('is-menu-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Zavřít menu' : 'Otevřít menu');
+    menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+  };
+  const closeMenu = () => setMenu(false);
+  const openMenu  = () => setMenu(true);
+
+  toggle.addEventListener('click', () => {
+    root.classList.contains('is-menu-open') ? closeMenu() : openMenu();
+  });
+
+  // Tapping a link closes the menu (then the anchor smooth-scrolls)
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeMenu);
+  });
+
+  // Escape closes the menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && root.classList.contains('is-menu-open')) closeMenu();
+  });
+
+  // Close if the viewport grows past the mobile breakpoint
+  window.matchMedia('(min-width: 721px)').addEventListener('change', (e) => {
+    if (e.matches) closeMenu();
+  });
 
   // ---------- BUILD EYE LOGO ----------
   // Generates the serrated polygon points, then injects the SVG.
