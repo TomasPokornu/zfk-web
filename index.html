@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add('js')</script>
 
 <!-- ============================================================
@@ -121,15 +121,16 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
 }
-/* Fully opaque background layer spanning the header AND the safe-area strip
-   above it. No transparency and no backdrop-filter, so scrolling content can
-   never bleed through — independent of safe-area, viewport-fit, or iOS blur
-   quirks. */
+/* Fully opaque background layer spanning the header AND the entire strip
+   above it up to the very top of the screen (status bar / notch). Extends
+   far up with a fixed offset so coverage never depends on env() resolving
+   correctly. No transparency, no backdrop-filter — content can never bleed
+   through, no matter the device. */
 .nav::before {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  top: calc(-1 * env(safe-area-inset-top, 0px));
+  top: -200px;
   background: var(--bg);
   opacity: 0;
   transition: opacity .35s var(--ease);
