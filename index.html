@@ -117,20 +117,26 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 150;
-  padding: 18px 0;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 0 18px;
   transition: background .35s var(--ease), backdrop-filter .35s var(--ease), border-color .35s var(--ease);
   border-bottom: 1px solid transparent;
 }
-.nav.is-scrolled {
-  background: rgba(236, 230, 215, .94);
-  border-bottom-color: var(--rule-soft);
+/* Opaque cover for the status-bar / notch strip above the header.
+   Standalone fixed layer (not a child of the blurred nav) so the nav's
+   backdrop-filter compositing can never reveal scrolling content up there. */
+.safe-area-cover {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 155;
+  pointer-events: none;
 }
-@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  .nav.is-scrolled {
-    background: rgba(236, 230, 215, .82);
-    backdrop-filter: saturate(140%) blur(14px);
-    -webkit-backdrop-filter: saturate(140%) blur(14px);
-  }
+.nav.is-scrolled {
+  background: rgba(236, 230, 215, .72);
+  backdrop-filter: saturate(150%) blur(16px);
+  -webkit-backdrop-filter: saturate(150%) blur(16px);
+  border-bottom-color: var(--rule-soft);
 }
 .nav .row {
   display: flex; align-items: center; justify-content: space-between;
@@ -802,6 +808,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 <!-- ============================================================
      NAV
      ============================================================ -->
+<div class="safe-area-cover" aria-hidden="true"></div>
 <nav class="nav" id="nav">
   <div class="wrap row">
     <a href="#top" class="brand">
