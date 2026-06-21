@@ -121,34 +121,31 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
 }
-/* Two separate background layers:
-   1) ::before — covers ONLY the strip above the header bar (status bar / notch
-      zone), always opaque, so scrolling content never peeks out up top. It does
-      not cover the bar itself, so the hero title stays visible at the top.
-   2) ::after — covers the header bar itself, fades in once scrolled. */
+/* Status-bar / notch cover: a standalone fixed strip across the very top of
+   the screen, ALWAYS opaque, sized to the safe-area inset. Guarantees nothing
+   shows above the header bar. Independent of the nav so it can't be affected
+   by the nav's stacking or transparency. */
+.top-cover {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 160;
+  pointer-events: none;
+}
+/* Nav bar background: transparent at the top of the page (hero title shows
+   through), fades to opaque once scrolled. */
 .nav::before {
   content: "";
   position: absolute;
-  left: 0; right: 0;
-  top: -200px;
-  height: calc(200px + env(safe-area-inset-top, 0px));
-  background: var(--bg);
-  pointer-events: none;
-  z-index: -1;
-}
-.nav::after {
-  content: "";
-  position: absolute;
   left: 0; right: 0; bottom: 0;
-  top: 0;
-  background: var(--bg);
-  opacity: 0;
-  transition: opacity .35s var(--ease);
+  top: calc(-1 * env(safe-area-inset-top, 0px));
+  background: transparent;
   pointer-events: none;
   z-index: -1;
 }
-.nav.is-scrolled::after {
-  opacity: 1;
+.nav.is-scrolled::before {
+  background: #ECE6D7;
 }
 .nav.is-scrolled {
   border-bottom-color: var(--rule-soft);
@@ -320,7 +317,7 @@ html.is-menu-open .nav-menu-foot { opacity: 1; }
    ============================================================ */
 .intro {
   min-height: 100svh;
-  padding: 110px 0 64px;
+  padding: calc(110px + env(safe-area-inset-top, 0px)) 0 64px;
   position: relative;
   display: flex; flex-direction: column;
 }
@@ -768,6 +765,9 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 </style>
 </head>
 <body>
+
+<!-- Opaque cover for the status-bar / notch strip, always on top -->
+<div class="top-cover" aria-hidden="true"></div>
 
 <!-- ============================================================
      SVG SYMBOLS (small / non-animated reuse)
