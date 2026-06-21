@@ -120,19 +120,12 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
   background: #ECE6D7;
-}
-/* Solid opaque fill extending from the nav up across the status-bar / notch
-   zone to the very top of the screen. Painted directly (no transparency, no
-   transition, no env() in the critical path), so scrolling content can NEVER
-   appear above or behind the header on any device. */
-.nav::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  top: -300px;
-  background: #ECE6D7;
-  pointer-events: none;
-  z-index: -1;
+  /* Extend the opaque background upward across the status-bar / notch zone.
+     A box-shadow paints as part of the header itself (z-index 150), so it
+     always sits ABOVE the page content scrolling behind it — unlike a
+     negative z-index pseudo-element, which paints behind that content. The
+     large spread + upward offset guarantees full coverage of any notch. */
+  box-shadow: 0 -400px 0 400px #ECE6D7;
 }
 .nav.is-scrolled {
   border-bottom-color: var(--rule-soft);
