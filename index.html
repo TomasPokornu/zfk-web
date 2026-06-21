@@ -121,23 +121,33 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
 }
-/* Fully opaque background layer spanning the header AND the entire strip
-   above it up to the very top of the screen (status bar / notch). Extends
-   far up with a fixed offset so coverage never depends on env() resolving
-   correctly. No transparency, no backdrop-filter — content can never bleed
-   through, no matter the device. */
+/* Two separate background layers:
+   1) ::before — covers ONLY the strip above the header bar (status bar / notch
+      zone), always opaque, so scrolling content never peeks out up top. It does
+      not cover the bar itself, so the hero title stays visible at the top.
+   2) ::after — covers the header bar itself, fades in once scrolled. */
 .nav::before {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
+  left: 0; right: 0;
   top: -200px;
+  height: calc(200px + env(safe-area-inset-top, 0px));
+  background: var(--bg);
+  pointer-events: none;
+  z-index: -1;
+}
+.nav::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  top: 0;
   background: var(--bg);
   opacity: 0;
   transition: opacity .35s var(--ease);
   pointer-events: none;
   z-index: -1;
 }
-.nav.is-scrolled::before {
+.nav.is-scrolled::after {
   opacity: 1;
 }
 .nav.is-scrolled {
