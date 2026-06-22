@@ -73,24 +73,9 @@
    RESET / BASE
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; overflow-x: clip; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; overflow-x: clip; background: #ECE6D7; }
 html, body { margin: 0; padding: 0; }
 img, svg { display: block; max-width: 100%; }
-
-/* Notch / status-bar cover. A standalone fixed bar pinned to the very top of
-   the screen, filled with the header colour, with a z-index above EVERYTHING
-   (page content, grain overlay, nav) so nothing can ever show through in the
-   safe-area zone. Being position:fixed, it is measured against the viewport
-   and is NOT clipped by html's overflow. Its height is the safe-area inset,
-   which viewport-fit=cover makes resolve to the real notch size on iOS. */
-#notch-cover {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: env(safe-area-inset-top, 0px);
-  background: #ECE6D7;
-  z-index: 9999;
-  pointer-events: none;
-}
 
 body {
   background: var(--bg);
@@ -134,7 +119,19 @@ a { color: inherit; text-decoration: none; }
   padding: calc(18px + env(safe-area-inset-top, 0px)) 0 18px;
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
+  /* No background-color on the fixed element itself: on iOS 26 Safari that
+     causes the status-bar / notch zone to mis-sample and content to bleed
+     through. The visual background goes on an absolute child below instead. */
+}
+/* Header background as an absolute child, extended upward to cover the
+   status-bar / notch zone. This is the documented iOS 26 Safari fix. */
+.nav::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  top: -100vh;
   background: #ECE6D7;
+  pointer-events: none;
 }
 .nav.is-scrolled {
   border-bottom-color: var(--rule-soft);
@@ -754,7 +751,6 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 </style>
 </head>
 <body>
-<div id="notch-cover" aria-hidden="true"></div>
 
 <!-- ============================================================
      SVG SYMBOLS (small / non-animated reuse)
