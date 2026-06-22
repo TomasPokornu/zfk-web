@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add('js')</script>
 
 <!-- ============================================================
@@ -77,6 +77,21 @@ html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 html, body { margin: 0; padding: 0; }
 img, svg { display: block; max-width: 100%; }
 
+/* Notch / status-bar cover. A standalone fixed bar pinned to the very top of
+   the screen, filled with the header colour, with a z-index above EVERYTHING
+   (page content, grain overlay, nav) so nothing can ever show through in the
+   safe-area zone. Being position:fixed, it is measured against the viewport
+   and is NOT clipped by html's overflow. Its height is the safe-area inset,
+   which viewport-fit=cover makes resolve to the real notch size on iOS. */
+#notch-cover {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: #ECE6D7;
+  z-index: 9999;
+  pointer-events: none;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);
@@ -116,7 +131,7 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 150;
-  padding: 18px 0;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) 0 18px;
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
   background: #ECE6D7;
@@ -291,7 +306,7 @@ html.is-menu-open .nav-menu-foot { opacity: 1; }
    ============================================================ */
 .intro {
   min-height: 100svh;
-  padding: 110px 0 64px;
+  padding: calc(110px + env(safe-area-inset-top, 0px)) 0 64px;
   position: relative;
   display: flex; flex-direction: column;
 }
@@ -345,7 +360,7 @@ html.is-menu-open .nav-menu-foot { opacity: 1; }
 .intro-cta { align-self: end; }
 
 @media (max-width: 820px) {
-  .intro { padding-top: 120px; }
+  .intro { padding-top: calc(120px + env(safe-area-inset-top, 0px)); }
   .intro-title { font-size: min(13vw, 64px); letter-spacing: -0.022em; }
   .intro-bottom { grid-template-columns: 1fr; gap: 28px; }
   .intro-cta { justify-self: start; }
@@ -739,6 +754,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 </style>
 </head>
 <body>
+<div id="notch-cover" aria-hidden="true"></div>
 
 <!-- ============================================================
      SVG SYMBOLS (small / non-animated reuse)
