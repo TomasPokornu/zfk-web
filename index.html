@@ -116,25 +116,24 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 150;
-  padding: calc(18px + env(safe-area-inset-top, 0px)) 0 18px;
+  padding: 18px 0;
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
-  /* No background-color on the fixed element itself: on iOS 26 Safari that
-     causes the status-bar / notch zone to mis-sample and content to bleed
-     through. The visual background goes on an absolute child below instead. */
-}
-/* Header background as an absolute child, extended upward to cover the
-   status-bar / notch zone. This is the documented iOS 26 Safari fix. */
-.nav::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  top: -100vh;
   background: #ECE6D7;
-  pointer-events: none;
 }
 .nav.is-scrolled {
   border-bottom-color: var(--rule-soft);
+}
+/* JS-driven status-bar cover: a fixed bar whose height is measured at runtime
+   on the actual device (env() is unreliable / 0 on Safari), filled with the
+   header colour, above all content. See the script at the end of <body>. */
+#sa-cover {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 0;
+  background: #ECE6D7;
+  z-index: 9999;
+  pointer-events: none;
 }
 .nav .row {
   display: flex; align-items: center; justify-content: space-between;
@@ -751,6 +750,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 </style>
 </head>
 <body>
+<div id="sa-cover" aria-hidden="true"></div>
 
 <!-- ============================================================
      SVG SYMBOLS (small / non-animated reuse)
@@ -1254,5 +1254,58 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 })();
 </script>
 
+<script>
+(function () {
+  var cover = document.getElementById('sa-cover');
+  var nav = document.getElementById('nav') || document.querySelector('.nav');
+
+  // Measure the real top safe-area inset at runtime. env() is 0 on Safari, so
+  // we read it via a probe element AND cross-check against the gap between the
+  // layout viewport and the visual viewport. We take the largest sane value.
+  function measureInset() {
+    // 1) probe using env() (works on some engines/PWA)
+    var probe = document.createElement('div');
+    probe.style.cssText = 'position:fixed;top:0;left:0;height:env(safe-area-inset-top,0px);width:0;visibility:hidden;pointer-events:none';
+    document.body.appendChild(probe);
+    var byEnv = probe.getBoundingClientRect().height;
+    probe.remove();
+
+    // 2) visualViewport offset (the visual viewport sits below the status bar)
+    var byVV = 0;
+    if (window.visualViewport && typeof window.visualViewport.offsetTop === 'number') {
+      byVV = window.visualViewport.offsetTop || 0;
+    }
+
+    var inset = Math.max(byEnv, byVV, 0);
+    // Clamp to a believable range so a bogus reading can't blow up the layout.
+    if (inset > 80) inset = 80;
+    return Math.round(inset);
+  }
+
+  function apply() {
+    var inset = measureInset();
+    document.documentElement.style.setProperty('--sa-top', inset + 'px');
+    cover.style.height = inset + 'px';
+    // Push the nav content down by the inset so the logo clears the notch,
+    // and make the nav's own background start at the very top of the screen.
+    nav.style.paddingTop = (18 + inset) + 'px';
+    nav.style.top = (-inset) + 'px';
+    nav.style.paddingBottom = '18px';
+    // (nav background already solid; shifting top up by inset makes it fill
+    //  the status-bar zone too.)
+  }
+
+  apply();
+  window.addEventListener('resize', apply);
+  window.addEventListener('orientationchange', apply);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', apply);
+    window.visualViewport.addEventListener('scroll', apply);
+  }
+  // Re-apply a few times after load in case Safari reports insets late.
+  setTimeout(apply, 300);
+  setTimeout(apply, 1000);
+})();
+</script>
 </body>
 </html>
