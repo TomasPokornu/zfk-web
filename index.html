@@ -13,6 +13,7 @@
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Žebětínský filmový klub">
 <meta name="theme-color" content="#ECE6D7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="canonical" href="https://www.zebetinskyfilmovyklub.cz/">
 
 <!-- Open Graph (Facebook, LinkedIn, WhatsApp, etc.) -->
@@ -67,13 +68,22 @@
   --gutter:    clamp(20px, 4vw, 56px);
   --ease:      cubic-bezier(.2, .7, .2, 1);
   --ease-in:   cubic-bezier(.55, 0, .65, .2);
+
+  /* iPhone safe-area / Dynamic Island cover. JS updates this when needed. */
+  --sa-top:    env(safe-area-inset-top, 0px);
 }
 
 /* ============================================================
    RESET / BASE
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; overflow-x: clip; background: #ECE6D7; }
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  background: var(--bg);
+}
 html, body { margin: 0; padding: 0; }
 img, svg { display: block; max-width: 100%; }
 
@@ -115,24 +125,24 @@ a { color: inherit; text-decoration: none; }
 .nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 150;
-  padding: 18px 0;
+  z-index: 9999;
+  padding: calc(18px + var(--sa-top, 0px)) 0 18px;
   border-bottom: 1px solid transparent;
   transition: border-color .35s var(--ease);
-  background: #ECE6D7;
+  background: var(--bg);
 }
 .nav.is-scrolled {
   border-bottom-color: var(--rule-soft);
 }
-/* JS-driven status-bar cover: a fixed bar whose height is measured at runtime
-   on the actual device (env() is unreliable / 0 on Safari), filled with the
-   header colour, above all content. See the script at the end of <body>. */
+/* iPhone status-bar / Dynamic Island cover.
+   Keeps the area above the fixed header the same colour as the header,
+   so page content never visually scrolls behind the notch. */
 #sa-cover {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 0;
-  background: #ECE6D7;
-  z-index: 9999;
+  height: var(--sa-top, 0px);
+  background: var(--bg);
+  z-index: 10000;
   pointer-events: none;
 }
 .nav .row {
@@ -1256,55 +1266,59 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 
 <script>
 (function () {
+  var root = document.documentElement;
   var cover = document.getElementById('sa-cover');
-  var nav = document.getElementById('nav') || document.querySelector('.nav');
 
-  // Measure the real top safe-area inset at runtime. env() is 0 on Safari, so
-  // we read it via a probe element AND cross-check against the gap between the
-  // layout viewport and the visual viewport. We take the largest sane value.
-  function measureInset() {
-    // 1) probe using env() (works on some engines/PWA)
+  function isIOSWithNotch() {
+    var ua = navigator.userAgent || '';
+    var isiOS = /iP(hone|od|ad)/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!isiOS) return false;
+
+    var w = Math.min(window.innerWidth || 0, window.innerHeight || 0);
+    var h = Math.max(window.innerWidth || 0, window.innerHeight || 0);
+
+    // Notched / Dynamic Island iPhones have tall, narrow viewports.
+    return w <= 430 && h >= 780;
+  }
+
+  function readEnvInset() {
     var probe = document.createElement('div');
-    probe.style.cssText = 'position:fixed;top:0;left:0;height:env(safe-area-inset-top,0px);width:0;visibility:hidden;pointer-events:none';
+    probe.style.cssText = 'position:fixed;top:0;left:0;height:env(safe-area-inset-top,0px);width:0;visibility:hidden;pointer-events:none;';
     document.body.appendChild(probe);
-    var byEnv = probe.getBoundingClientRect().height;
+    var value = probe.getBoundingClientRect().height || 0;
     probe.remove();
+    return value;
+  }
 
-    // 2) visualViewport offset (the visual viewport sits below the status bar)
-    var byVV = 0;
-    if (window.visualViewport && typeof window.visualViewport.offsetTop === 'number') {
-      byVV = window.visualViewport.offsetTop || 0;
-    }
+  function fallbackInset() {
+    if (!isIOSWithNotch()) return 0;
 
-    var inset = Math.max(byEnv, byVV, 0);
-    // Clamp to a believable range so a bogus reading can't blow up the layout.
+    var portrait = (window.innerHeight || 0) >= (window.innerWidth || 0);
+    if (!portrait) return 0;
+
+    // Safari sometimes reports env(safe-area-inset-top) as 0 outside PWA mode.
+    // This fallback matches the visible iPhone status-bar / Dynamic Island area.
+    return 47;
+  }
+
+  function applySafeArea() {
+    var inset = Math.max(readEnvInset(), fallbackInset());
     if (inset > 80) inset = 80;
-    return Math.round(inset);
+    inset = Math.round(inset);
+
+    root.style.setProperty('--sa-top', inset + 'px');
+    if (cover) cover.style.height = inset + 'px';
   }
 
-  function apply() {
-    var inset = measureInset();
-    document.documentElement.style.setProperty('--sa-top', inset + 'px');
-    cover.style.height = inset + 'px';
-    // Push the nav content down by the inset so the logo clears the notch,
-    // and make the nav's own background start at the very top of the screen.
-    nav.style.paddingTop = (18 + inset) + 'px';
-    nav.style.top = (-inset) + 'px';
-    nav.style.paddingBottom = '18px';
-    // (nav background already solid; shifting top up by inset makes it fill
-    //  the status-bar zone too.)
-  }
-
-  apply();
-  window.addEventListener('resize', apply);
-  window.addEventListener('orientationchange', apply);
+  applySafeArea();
+  window.addEventListener('resize', applySafeArea, { passive: true });
+  window.addEventListener('orientationchange', applySafeArea, { passive: true });
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', apply);
-    window.visualViewport.addEventListener('scroll', apply);
+    window.visualViewport.addEventListener('resize', applySafeArea, { passive: true });
   }
-  // Re-apply a few times after load in case Safari reports insets late.
-  setTimeout(apply, 300);
-  setTimeout(apply, 1000);
+  setTimeout(applySafeArea, 250);
+  setTimeout(applySafeArea, 1000);
 })();
 </script>
 </body>
