@@ -23,8 +23,8 @@
 <meta property="og:url" content="https://www.zebetinskyfilmovyklub.cz/">
 <meta property="og:title" content="Žebětínský filmový klub | Projekce v Brně-Žebětíně">
 <meta property="og:description" content="Žebětínský filmový klub přináší pravidelné projekce kvalitních filmů v Brně-Žebětíně. Sledujte program a rezervujte si své místo.">
-<meta property="og:image" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
-<meta property="og:image:secure_url" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
+<meta property="og:image" content="https://www.zebetinskyfilmovyklub.cz/og-image.jpg">
+<meta property="og:image:secure_url" content="https://www.zebetinskyfilmovyklub.cz/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -35,7 +35,7 @@
 <meta name="twitter:url" content="https://www.zebetinskyfilmovyklub.cz/">
 <meta name="twitter:title" content="Žebětínský filmový klub | Projekce v Brně-Žebětíně">
 <meta name="twitter:description" content="Žebětínský filmový klub přináší pravidelné projekce kvalitních filmů v Brně-Žebětíně. Sledujte program a rezervujte si své místo.">
-<meta name="twitter:image" content="https://www.zebetinskyfilmovyklub.cz/images/og-image.jpg">
+<meta name="twitter:image" content="https://www.zebetinskyfilmovyklub.cz/og-image.jpg">
 <meta name="twitter:image:alt" content="Logo Žebětínského filmového klubu — oko v ozubeném kruhu s textem ŽEBĚTÍNSKÝ FILMOVÝ KLUB.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -520,6 +520,19 @@ h2.section-title .light {
 }
 .film:hover .film-poster img { transform: scale(1.045); }
 
+/* Grafiky k nadchazejicim projekcim jsou 4:5 a maji text az u hrany.
+   Ramecek proto sedi presne na format a hover zvetsuje cely ramecek,
+   ne obrazek v nem — nic se tak neurizne. */
+.film--event .film-poster {
+  aspect-ratio: 4 / 5;
+  transition: transform .7s var(--ease), box-shadow .7s var(--ease);
+}
+.film--event:hover .film-poster {
+  transform: scale(1.02);
+  box-shadow: 0 40px 72px -30px rgba(16, 15, 12, .3), 0 22px 44px -24px rgba(16, 15, 12, .16);
+}
+.film--event:hover .film-poster img { transform: none; }
+
 .film-meta {
   display: flex; align-items: baseline; gap: 12px;
   font-size: 13px;
@@ -756,6 +769,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
   html.js .reveal { opacity: 1; transform: none; transition: none; }
   .badge-rotor, .eye-orb { animation: none; }
   .film:hover .film-poster img { transform: none; }
+  .film--event:hover .film-poster { transform: none; }
 }
 </style>
 </head>
@@ -895,19 +909,89 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 
     <div class="coming reveal d1">
       <p class="coming-title">
-        Program oznámíme brzy.
+        Přes les máme <span class="red">okruh</span>.
       </p>
       <p class="coming-meta">
-        Sezona se rýsuje.<br>
-        Sledujte nás na <a href="#kontakt">sociálních&nbsp;sítích</a>.
+        Dvakrát auto v hlavní roli, do třetice zasněžený Gotham.
       </p>
+    </div>
+
+    <div class="card-grid">
+
+      <!-- FILM CARD · Upír z Feratu -->
+      <article class="film film--event reveal d1">
+        <a class="film-poster" href="https://www.csfd.cz/film/4247-upir-z-feratu/" target="_blank" rel="noopener" aria-label="Upír z Feratu na ČSFD">
+          <img src="poster-upir-z-feratu.jpg" alt="Plakát projekce Upír z Feratu (Juraj Herz, 1981), čtvrtek 22. října 2026 od 19:30" loading="lazy" width="900" height="1125">
+        </a>
+        <div class="film-meta">
+          <span class="date">22. října 2026</span>
+          <span class="sep">/</span>
+          <span>1981 · Juraj Herz</span>
+        </div>
+        <h3 class="film-title">Upír z&nbsp;Feratu</h3>
+        <p class="film-desc">Československý sci-fi horor podle námětu Josefa Nesvadby o&nbsp;závodním automobilu, který ke svému provozu nepotřebuje benzin, ale lidskou krev. Vedle Jiřího Menzela a&nbsp;Dagmar Veškrnové hraje výraznou roli samotný vůz Ferat, jehož podobu navrhl Theodor Pištěk.</p>
+        <div class="film-actions">
+          <a href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669400/2026-10-22;viewMode=day" target="_blank" rel="noopener">
+            Rezervace <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+          <a href="https://www.csfd.cz/film/4247-upir-z-feratu/" target="_blank" rel="noopener">
+            ČSFD <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- FILM CARD · Auto zabiják -->
+      <article class="film film--event reveal d2">
+        <a class="film-poster" href="https://www.csfd.cz/film/229384-grindhouse-auto-zabijak/" target="_blank" rel="noopener" aria-label="Grindhouse: Auto zabiják na ČSFD">
+          <img src="poster-auto-zabijak.jpg" alt="Plakát projekce Grindhouse: Auto zabiják (Quentin Tarantino, 2007), čtvrtek 26. listopadu 2026 od 19:30" loading="lazy" width="900" height="1125">
+        </a>
+        <div class="film-meta">
+          <span class="date">26. listopadu 2026</span>
+          <span class="sep">/</span>
+          <span>2007 · Quentin Tarantino</span>
+        </div>
+        <h3 class="film-title">Auto zabiják</h3>
+        <p class="film-desc">Kurt Russell jako kaskadér Mike, který svůj speciálně upravený automobil používá jako vražednou zbraň. Tarantinova pocta exploatační kinematografii stojí na rychlých autech, praktických kaskadérských scénách, černém humoru a&nbsp;automobilových honičkách.</p>
+        <div class="film-actions">
+          <a href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669401/2026-11-26;viewMode=day" target="_blank" rel="noopener">
+            Rezervace <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+          <a href="https://www.csfd.cz/film/229384-grindhouse-auto-zabijak/" target="_blank" rel="noopener">
+            ČSFD <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <!-- FILM CARD · Batman se vrací (vánoční speciál) -->
+      <article class="film film--event reveal d3">
+        <a class="film-poster" href="https://www.csfd.cz/film/1070-batman-se-vraci/" target="_blank" rel="noopener" aria-label="Batman se vrací na ČSFD">
+          <img src="poster-batman-se-vraci.jpg" alt="Plakát vánočního speciálu Batman se vrací (Tim Burton, 1992), čtvrtek 10. prosince 2026 od 19:30" loading="lazy" width="900" height="1125">
+        </a>
+        <div class="film-meta">
+          <span class="date">10. prosince 2026</span>
+          <span class="sep">/</span>
+          <span>1992 · Tim Burton</span>
+        </div>
+        <h3 class="film-title">Batman se&nbsp;vrací</h3>
+        <p class="film-desc">Vánoční speciál. Burtonův zasněžený Gotham, Michael Keaton jako Batman, Michelle Pfeiffer jako Catwoman a&nbsp;Danny DeVito jako Tučňák nabídnou poněkud temnější alternativu k&nbsp;tradiční vánoční filmové nabídce.</p>
+        <div class="film-actions">
+          <a href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669402/2026-12-10;viewMode=day" target="_blank" rel="noopener">
+            Rezervace <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+          <a href="https://www.csfd.cz/film/1070-batman-se-vraci/" target="_blank" rel="noopener">
+            ČSFD <svg class="arrow"><use href="#arrow-ne"/></svg>
+          </a>
+        </div>
+      </article>
+
     </div>
 
     <!--
     ─────────────────────────────────────────────────────────────
     ADDING A NEW FILM
     Copy any <article class="film"> block from the Archive section
-    below into a <div class="card-grid"> placed under .coming above.
+    below (or from the Program section above) into the <div class="card-grid">
+    in the Program section.
     Each card uses:
       • .film-poster img      vertical poster (≈900×1272)
       • .film-meta            date / year · director
