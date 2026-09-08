@@ -449,7 +449,7 @@ h2.section-title .light {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   gap: 48px;
-  align-items: end;
+  align-items: baseline;
   padding: clamp(40px, 6vw, 72px) 0;
   border-top: 1.5px solid var(--ink);
   border-bottom: 1.5px solid var(--ink);
@@ -465,6 +465,23 @@ h2.section-title .light {
   color: var(--ink-2);
 }
 .coming-title .red { color: var(--red); }
+.coming-note {
+  margin: 14px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  font-variation-settings: "wght" 400;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.coming-note a {
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 2px;
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
+  transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.coming-note a:hover { color: var(--red); border-bottom-color: var(--red); }
 .coming-meta {
   font-size: 16px;
   font-weight: 400;
@@ -625,6 +642,17 @@ h3.film-title {
   transition: color .35s var(--ease);
 }
 .info-cell > div { margin-top: auto; }
+.info-cell--wide { grid-column: 1 / -1; min-height: 0; }
+.info-cell--wide .info-sub { max-width: 58ch; }
+.info-cell--wide .info-sub a {
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 1px;
+  font-weight: 500;
+  font-variation-settings: "wght" 500;
+  transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.info-cell--wide .info-sub a:hover { color: var(--red); border-bottom-color: var(--red); }
 .info-label {
   font-size: 12px;
   font-weight: 500;
@@ -908,11 +936,17 @@ html.js .reveal.d5.in { transition-delay: .38s; }
     </div>
 
     <div class="coming reveal d1">
-      <p class="coming-title">
-        Přes les máme <span class="red">okruh</span>.
-      </p>
+      <div class="coming-head">
+        <p class="coming-title">
+          Přes les máme <span class="red">okruh</span>.
+        </p>
+        <p class="coming-note">
+          Rezervujte si bezplatně <a href="https://zebetinsky-filmovy-klub.reenio.cz/cs/" target="_blank" rel="noopener">své&nbsp;místo</a>.
+        </p>
+      </div>
       <p class="coming-meta">
-        Dvakrát auto v hlavní roli, do třetice zasněžený Gotham.
+        Dvakrát auto v hlavní roli,<br>
+        do třetice zasněžený Gotham.
       </p>
     </div>
 
@@ -920,7 +954,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 
       <!-- FILM CARD · Upír z Feratu -->
       <article class="film film--event reveal d1">
-        <a class="film-poster" href="https://www.csfd.cz/film/4247-upir-z-feratu/" target="_blank" rel="noopener" aria-label="Upír z Feratu na ČSFD">
+        <a class="film-poster" href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669400/2026-10-22;viewMode=day" target="_blank" rel="noopener" aria-label="Rezervace projekce Upír z Feratu">
           <img src="poster-upir-z-feratu.jpg" alt="Plakát projekce Upír z Feratu (Juraj Herz, 1981), čtvrtek 22. října 2026 od 19:30" loading="lazy" width="900" height="1125">
         </a>
         <div class="film-meta">
@@ -942,7 +976,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 
       <!-- FILM CARD · Auto zabiják -->
       <article class="film film--event reveal d2">
-        <a class="film-poster" href="https://www.csfd.cz/film/229384-grindhouse-auto-zabijak/" target="_blank" rel="noopener" aria-label="Grindhouse: Auto zabiják na ČSFD">
+        <a class="film-poster" href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669401/2026-11-26;viewMode=day" target="_blank" rel="noopener" aria-label="Rezervace projekce Grindhouse: Auto zabiják">
           <img src="poster-auto-zabijak.jpg" alt="Plakát projekce Grindhouse: Auto zabiják (Quentin Tarantino, 2007), čtvrtek 26. listopadu 2026 od 19:30" loading="lazy" width="900" height="1125">
         </a>
         <div class="film-meta">
@@ -964,7 +998,7 @@ html.js .reveal.d5.in { transition-delay: .38s; }
 
       <!-- FILM CARD · Batman se vrací (vánoční speciál) -->
       <article class="film film--event reveal d3">
-        <a class="film-poster" href="https://www.csfd.cz/film/1070-batman-se-vraci/" target="_blank" rel="noopener" aria-label="Batman se vrací na ČSFD">
+        <a class="film-poster" href="https://zebetinsky-filmovy-klub.reenio.cz/cs/term/P1669402/2026-12-10;viewMode=day" target="_blank" rel="noopener" aria-label="Rezervace projekce Batman se vrací">
           <img src="poster-batman-se-vraci.jpg" alt="Plakát vánočního speciálu Batman se vrací (Tim Burton, 1992), čtvrtek 10. prosince 2026 od 19:30" loading="lazy" width="900" height="1125">
         </a>
         <div class="film-meta">
@@ -1124,6 +1158,18 @@ html.js .reveal.d5.in { transition-delay: .38s; }
         <div>
           <div class="info-value">Popcorn, pivo &amp;&nbsp;Zonka</div>
           <div class="info-sub">K dispozici v sále</div>
+        </div>
+      </div>
+
+      <div class="info-cell info-cell--wide">
+        <span class="info-label">Rezervace?</span>
+        <div>
+          <div class="info-value">Zdarma předem</div>
+          <div class="info-sub">
+            Místa na jednotlivé projekce si zamluvíte v&nbsp;rezervačním systému
+            <a href="https://zebetinsky-filmovy-klub.reenio.cz/cs/" target="_blank" rel="noopener">reenio</a>.
+            Rezervace nic nestojí, vstupenku platíte až na místě.
+          </div>
         </div>
       </div>
 
