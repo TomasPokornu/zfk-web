@@ -1,0 +1,31 @@
+ZFK — finální balík pro web (11 souborů)
+========================================
+
+1) github.com/TomasPokornu/zfk-web -> Add file -> Upload files
+2) Přetáhni VŠECH 11 souborů z tohoto zipu do rootu repa
+3) Commit changes
+
+   index.html              index.html + sitemap.xml PŘEPÍŠOU stávající,
+   sitemap.xml             zbytek jsou nové soubory
+   favicon.ico
+   favicon-48.png
+   favicon-96.png
+   icon-192.png
+   apple-touch-icon.png
+   icon-512.png
+   og-image.jpg
+   poster-upir-z-feratu.jpg
+   poster-auto-zabijak.jpg
+   poster-batman-se-vraci.jpg
+
+4) Po ~1 minutě zkontroluj v prohlížeči:
+   https://www.zebetinskyfilmovyklub.cz/favicon.ico   (musí se stáhnout ikona)
+   https://www.zebetinskyfilmovyklub.cz/              (v záložce má být razítko s okem)
+
+5) Strukturovaná data: search.google.com/test/rich-results
+   -> vlož https://www.zebetinskyfilmovyklub.cz/ -> musí najít 3 události
+
+6) Search Console -> URL Inspection -> vlož homepage -> Request indexing
+   (tím urychlíš i načtení faviconu, jinak to trvá dny až týdny)
+
+Názvy souborů ikon už neměň - Google si favicon páruje podle URL.
